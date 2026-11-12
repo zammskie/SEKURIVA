@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, BookOpen, LockKeyhole, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, ShieldCheck } from "lucide-react";
 import { Brand } from "@/components/layout/brand";
 import { Badge } from "@/components/ui/badge";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
+import { GoogleLoginPreview } from "@/components/layout/google-login-preview";
 
 export const metadata: Metadata = { title: "Login | Security Awareness Simulator" };
 
@@ -21,8 +22,7 @@ export default function LoginPage() {
           <Badge tone="teal">FRONTEND PREVIEW</Badge>
           <h2 id="login-title">Login</h2>
           <p className="auth-intro">Masuk ke ruang belajar<br />Security Awareness Simulator.</p>
-          <Button className="auth-google" variant="secondary" disabled aria-describedby="google-status"><span className="auth-google-letter" aria-hidden="true">G</span> Masuk dengan Google</Button>
-          <p className="auth-google-status" id="google-status"><LockKeyhole size={16} aria-hidden="true" /><span>Autentikasi Google belum dihubungkan. Tombol login belum tersedia pada tahap ini.</span></p>
+          <GoogleLoginPreview />
           <div className="auth-divider"><span>Jelajahi tampilan aplikasi</span></div>
           <ButtonLink className="auth-preview-button" href="/preview">Masuk ke mode preview <ArrowRight size={18} aria-hidden="true" /></ButtonLink>
           <p className="auth-preview-note">Tidak memerlukan akun. Menggunakan data demo untuk memeriksa antarmuka dan navigasi.</p>

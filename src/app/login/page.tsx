@@ -27,9 +27,10 @@ export default function LoginPage() {
           <ButtonLink className="auth-preview-button" href="/preview">Masuk ke mode preview <ArrowRight size={18} aria-hidden="true" /></ButtonLink>
           <p className="auth-preview-note">Tidak memerlukan akun. Menggunakan data demo untuk memeriksa antarmuka dan navigasi.</p>
         </div>
-        <p className="auth-bottom-note">Tahap 2 · Latihan lokal</p>
+        <p className="auth-bottom-note">Tahap 3 · Materi dan latihan lokal</p>
       </section>
     </main>
   );
 }
+
 

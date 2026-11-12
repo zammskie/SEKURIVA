@@ -28,14 +28,14 @@ export function AdminDashboard() {
 
       <section className="dashboard-metric-strip" aria-label="Statistik ilustrasi, bukan data penelitian">
         <div className="dashboard-metric">
-          <p className="dashboard-metric-label"><BookOpen aria-hidden="true" />Materi contoh</p>
+          <p className="dashboard-metric-label"><BookOpen aria-hidden="true" />Materi pembelajaran</p>
           <div className="dashboard-metric-value">{adminDemo.materialsTotal}<small>materi</small></div>
-          <p className="dashboard-metric-note">Ringkasan konten demo</p>
+          <p className="dashboard-metric-note">Materi tersedia di ruang siswa</p>
         </div>
         <div className="dashboard-metric">
-          <p className="dashboard-metric-label"><Layers3 aria-hidden="true" />Pratinjau skenario</p>
-          <div className="dashboard-metric-value">{adminDemo.scenarioPreviewsTotal}<small>/ {adminDemo.scenariosPlanned} rencana</small></div>
-          <p className="dashboard-metric-note">Katalog demo, belum dimainkan</p>
+          <p className="dashboard-metric-label"><Layers3 aria-hidden="true" />Skenario tersedia</p>
+          <div className="dashboard-metric-value">{adminDemo.scenarioPreviewsTotal}<small>skenario</small></div>
+          <p className="dashboard-metric-note">Latihan lokal di ruang siswa</p>
         </div>
         <div className="dashboard-metric">
           <p className="dashboard-metric-label"><UsersRound aria-hidden="true" />Profil siswa demo</p>
@@ -85,7 +85,7 @@ export function AdminDashboard() {
               <tr key={student.id}>
                 <td><div className="dashboard-student-person"><span className="dashboard-student-avatar" aria-hidden="true">{student.initials}</span><div><strong>{student.name}</strong><small>X BC 1 · Profil fiktif</small></div></div></td>
                 <td data-label="Materi">{student.materialsCompleted} / {adminDemo.materialsTotal} materi</td>
-                <td data-label="Simulasi">{student.scenariosCompleted} / {adminDemo.scenariosPlanned} rencana</td>
+                <td data-label="Simulasi">{student.scenariosCompleted} skenario</td>
                 <td data-label="Progres materi"><div className="dashboard-table-progress"><div className="dashboard-progress-track" aria-hidden="true"><span style={{ width: `${student.progressPercent}%` }} /></div><span>{student.progressPercent}%</span></div></td>
                 <td data-label="Status demo"><Badge tone={student.status === "Aktif" ? "success" : "neutral"}>{student.status}</Badge></td>
               </tr>
@@ -102,3 +102,4 @@ export function AdminDashboard() {
     </div>
   );
 }
+

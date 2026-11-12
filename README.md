@@ -1,44 +1,60 @@
-# Security Awareness Simulator — Tahap 2
+# Security Awareness Simulator — Tahap 3
 
-Media pembelajaran keamanan digital untuk kelas X BC 1 SMK Negeri 1 Semarang. Fondasi Tahap 1 dilanjutkan dengan satu skenario lengkap dan mesin simulasi lokal. Target akhir tetap delapan skenario; tujuh lainnya belum diimplementasikan.
+Media pembelajaran keamanan digital untuk kelas X BC 1 SMK Negeri 1 Semarang. Ruang siswa menyediakan empat materi dan delapan simulasi interaktif dengan cerita fiktif.
 
-## Menjalankan
+## Menjalankan proyek
 
-Node.js >=20.9, npm (lingkungan pengembangan Node 24.14).
+Gunakan Node.js 20.9 atau lebih baru.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Buka http://localhost:3000/siswa/skenario lalu pilih Pesan dari Kurir Paket. Build produksi lokal: `npm run build` kemudian `npm start`.
+- Materi di http://localhost:3000/siswa/materi
+- Simulasi di http://localhost:3000/siswa/skenario
+- Pemilihan peran di http://localhost:3000/preview
 
-## Teknologi dan struktur
+Untuk menjalankan versi produksi lokal, gunakan `npm run build` lalu `npm start`.
 
-Next.js 16.4.5 App Router, React 19.3.1, TypeScript 5.9.3 strict, Tailwind CSS 4.3.4, Lucide React 1.69.0, ESLint 9.39.5. Lockfile menyimpan versi dependency; tsx menjalankan tes TypeScript.
+## Materi pembelajaran
 
-- src/app: landing, login, pemilihan preview, layout role, dashboard dan halaman skenario.
-- src/components/ui: Button, Input, Badge, Card, PageHeader, Breadcrumb, EmptyState.
-- src/components/layout: sidebar, topbar, item navigasi, drawer responsif, halaman placeholder.
-- src/components/simulation: ScenarioPlayer.
-- src/data/scenarios/pesan-paket.ts: satu Scenario lengkap; index.ts: tiga ringkasan katalog.
-- src/lib/types: kontrak Scenario, ScenarioNode, ScenarioChoice, Consequence, Debriefing, ScenarioProgress.
-- src/lib/scenario-engine: validasi graf dan transisi sesi murni.
-- src/lib/repositories: adapter baca data mock untuk persiapan integrasi.
-- src/styles: token dan CSS responsif untuk publik, shell, dashboard, simulasi.
-- tests: pengujian engine dan graf.
+| Modul | Topik | Isi |
+| --- | --- | --- |
+| Dasar Keamanan Digital | 3 | Aset digital, verifikasi, dan langkah awal setelah insiden |
+| Mengenali Phishing | 4 | Penyamaran, tekanan, tautan/lampiran/QR, dan pelaporan |
+| Kata Sandi & Keamanan Akun | 3 | Kredensial unik, MFA, OTP, dan pemulihan akun |
+| Privasi & Data Pribadi | 3 | Paparan data, pembatasan informasi, dan berbagi bukti secara privat |
 
-## Perilaku Tahap 2
+Setiap modul memiliki tujuan, penjelasan, contoh kontekstual, rangkuman, refleksi, satu cek pemahaman dengan umpan balik, serta referensi dan tautan simulasi terkait. Referensi utama berasal dari CISA dan FTC serta dicantumkan pada modul yang relevan.
 
-Siswa dapat memulai latihan, membaca chat/adegan, memilih tindakan, membaca respons dan konsekuensi, mengikuti cabang, mencapai ending dan membuka debriefing. Keempat jalur melalui dua keputusan. Ada jejak keputusan sesi dan konfirmasi ulangi latihan. Tidak ada leaderboard, batas waktu, atau skor penelitian.
+## Skenario
 
-Progres hanya berada dalam memori halaman. Refresh, keluar, atau navigasi kembali memulai sesi baru. Tidak ada localStorage, database, unduhan APK, permintaan OTP nyata, atau pesan keluar. Dashboard tetap menggunakan data fiktif terpisah; hasil latihan tidak mengubah angka dashboard. Riwayat dan progres global belum terintegrasi.
+1. Pesan dari Kurir Paket
+2. Email Verifikasi Akun
+3. Promo yang Terlalu Menarik
+4. Teman Meminta Bantuan
+5. Hadiah yang Tidak Pernah Diikuti
+6. Tawaran Magang Instan
+7. Kode QR di Poster Acara
+8. Petugas Meminta Kode OTP
 
-Route lengkap: /, /login, /preview, /admin, /siswa, /siswa/skenario, /siswa/skenario/pesan-paket. Placeholder: /admin/materi, /admin/skenario, /admin/pemantauan, /admin/riwayat, /siswa/materi, /siswa/progres, /siswa/riwayat.
+Setiap skenario menggabungkan percakapan dan adegan, memiliki empat jalur dengan dua keputusan pada setiap jalur, serta menampilkan respons dan konsekuensi tiap pilihan. Keempat ending menuju debriefing dengan tanda bahaya, tindakan aman, pertanyaan refleksi, dan tautan bacaan. Pemain dapat melihat jejak keputusan dan mengulang sesi.
 
-Autentikasi Google tetap disabled. Seluruh route terbuka untuk preview, bukan kontrol akses. Supabase, CRUD, backend, penyimpanan persisten, tujuh skenario lainnya dan deployment belum dikerjakan.
+Latihan dan cek pemahaman berjalan di memori halaman. Meninggalkan atau memuat ulang halaman mengakhiri sesi. Angka progres, riwayat global, dan profil di dashboard merupakan data demo. Integrasi autentikasi, database, pengelolaan konten, dan penyimpanan progres masuk Tahap 4.
 
-## Validasi
+## Struktur
+
+- `src/app` — halaman publik, dashboard, katalog, dan halaman detail.
+- `src/components` — shell responsif, komponen UI, pemain simulasi, dan cek pemahaman.
+- `src/data/materials` — ringkasan katalog serta konten modul.
+- `src/data/scenarios` — skenario acuan, tujuh skenario tambahan, dan katalog.
+- `src/lib/scenario-engine` — validasi graf dan transisi sesi.
+- `src/lib/types` — tipe TypeScript untuk konten dan progres.
+- `src/styles` — token desain dan gaya responsif.
+- `tests` — pengujian engine, keterkaitan konten, dan penelusuran seluruh jalur.
+
+## Pemeriksaan
 
 ```sh
 npm test
@@ -47,24 +63,6 @@ npm run typecheck
 npm run build
 ```
 
-Validator memeriksa graf konten bertipe, bukan JSON eksternal. Data dari backend/editor kelak membutuhkan parsing schema tersendiri. Lihat src/lib/scenario-engine/README.md untuk invariant dan perilaku engine.
+Tes konten menelusuri seluruh 32 jalur dengan mesin simulasi serta memeriksa keterkaitan katalog, modul, dan debriefing. Mesin memvalidasi konten bertipe sebelum sesi berjalan. Lihat `src/lib/scenario-engine/README.md` untuk aturan graf.
 
-Tampilan memiliki breakpoint smartphone/tablet/desktop. Browser preview sebelumnya timeout; screenshot dan verifikasi visual 1440/1366/768/390/360px belum tersedia. Pengujian otomatis engine tidak menggantikan pemeriksaan interaksi di browser.
-
-## Dasar materi dan batas interpretasi
-
-Skenario fiktif disusun untuk latihan, bukan klaim bahwa setiap lampiran pasti menginfeksi perangkat. Prinsip mengenali lampiran mencurigakan dan memeriksa klaim melalui kanal yang dikenal mengacu pada:
-- CISA, Phishing: https://www.cisa.gov/sites/default/files/2024-02/Update%20to%20Phishing%20General%20Security%20Postcard_01.01.2024.pdf
-- FTC, How To Recognize and Avoid Phishing Scams: https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams
-
-Tinjau bahasa dan tujuan pembelajaran bersama guru sebelum memperluas konten. Berikutnya: review satu skenario ini, perluas materi dan skenario, lalu rancang integrasi autentikasi serta penyimpanan sesuai kebutuhan proposal.
-
-## Hasil pemeriksaan — 12 November 2026
-
-- npm run lint: lulus tanpa warning.
-- npm run typecheck: lulus.
-- npm test: 13 tes lulus, termasuk seluruh empat jalur ke debriefing.
-- npm run build: lulus; 14 route aplikasi tersedia.
-- HTTP smoke check: seluruh 14 route mengembalikan 200.
-- Browser bawaan kembali timeout saat membuka latihan lokal. Interaksi UI dan tampilan lintas ukuran belum terverifikasi secara visual; tidak ada screenshot yang diklaim.
-
+Hasil Tahap 3 pada 12 November 2026: 23 tes lulus, lint dan pemeriksaan TypeScript lulus, serta build produksi berhasil. Pemeriksaan HTTP lokal mengonfirmasi 25 halaman merespons 200, semua tautan katalog tersedia, dan slug tak dikenal merespons 404. Tampilan lintas ukuran dan interaksi melalui browser belum diverifikasi secara visual.

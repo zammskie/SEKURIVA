@@ -61,11 +61,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="tentang" className="landing-about public-container" aria-labelledby="about-title"><div className="landing-about-icon"><GraduationCap size={30} aria-hidden="true" /></div><div><p className="landing-eyebrow">TENTANG MEDIA PEMBELAJARAN</p><h2 id="about-title">Dikembangkan untuk lingkungan belajar.</h2><p>Security Awareness Simulator merupakan media pembelajaran keamanan digital berbasis web responsif untuk siswa kelas X BC 1 SMK Negeri 1 Semarang.</p><p className="landing-stage-note">Tahap 2 · Satu latihan simulasi lokal tersedia melalui preview siswa. Materi lengkap dan autentikasi masih dalam pengembangan.</p></div></section>
+        <section id="tentang" className="landing-about public-container" aria-labelledby="about-title"><div className="landing-about-icon"><GraduationCap size={30} aria-hidden="true" /></div><div><p className="landing-eyebrow">TENTANG MEDIA PEMBELAJARAN</p><h2 id="about-title">Dikembangkan untuk lingkungan belajar.</h2><p>Security Awareness Simulator merupakan media pembelajaran keamanan digital berbasis web responsif untuk siswa kelas X BC 1 SMK Negeri 1 Semarang.</p><p className="landing-stage-note">Tahap 3 · Empat materi dan delapan simulasi tersedia melalui ruang siswa.</p></div></section>
       </main>
 
       <footer className="landing-footer"><div className="public-container landing-footer-inner"><Brand compact /><p>Media pembelajaran keamanan digital</p><Link href="/preview">Mode preview <ArrowRight size={14} aria-hidden="true" /></Link></div></footer>
     </div>
   );
 }
+
 

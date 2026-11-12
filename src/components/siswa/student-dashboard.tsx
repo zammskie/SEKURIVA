@@ -67,7 +67,7 @@ export function StudentDashboard() {
             <div className="dashboard-progress-track" role="progressbar" aria-label="Ilustrasi progres materi" aria-valuenow={studentDemo.materialProgressPercent} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${studentDemo.materialProgressPercent}%` }} /></div>
           </div>
           <div className="dashboard-progress-item">
-            <div className="dashboard-progress-title"><span>Simulasi diselesaikan</span><strong>{studentDemo.scenariosCompleted}<small> / {studentDemo.scenariosTotal} direncanakan</small></strong></div>
+            <div className="dashboard-progress-title"><span>Simulasi diselesaikan</span><strong>{studentDemo.scenariosCompleted}<small> / {studentDemo.scenariosTotal} tersedia</small></strong></div>
             <div className="dashboard-progress-track navy" role="progressbar" aria-label="Ilustrasi progres simulasi" aria-valuenow={studentDemo.scenarioProgressPercent} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${studentDemo.scenarioProgressPercent}%` }} /></div>
           </div>
           <p className="dashboard-progress-caption">Angka contoh untuk meninjau tampilan. Progres belum dapat dicatat atau disimpan.</p>
@@ -77,7 +77,7 @@ export function StudentDashboard() {
       <div className="dashboard-body-grid">
         <section aria-labelledby="student-materials">
           <div className="dashboard-section-heading">
-            <div><h2 id="student-materials">Bekal sebelum simulasi</h2><p>Empat ringkasan materi contoh untuk mengenali dasar keamanan.</p></div>
+            <div><h2 id="student-materials">Bekal sebelum simulasi</h2><p>Empat materi lengkap dengan contoh dan cek pemahaman.</p></div>
             <Link className="dashboard-text-link" href="/siswa/materi">Lihat materi <ArrowRight aria-hidden="true" /></Link>
           </div>
           <ul className="dashboard-materials">
@@ -92,7 +92,7 @@ export function StudentDashboard() {
                     <p><span>{material.category}</span><span aria-hidden="true">·</span><Clock3 aria-hidden="true" />{material.durationMinutes} menit <span aria-hidden="true">·</span> {material.lessonCount} topik</p>
                   </div>
                   <span className={`dashboard-material-state${completed ? "" : " pending"}`}>{completed && <Check size={12} aria-hidden="true" />}{completed ? "Demo selesai" : "Belum dipelajari"}</span>
-                  <Link href="/siswa/materi" aria-label={`Lihat halaman materi: ${material.title}`}><ChevronRight size={17} aria-hidden="true" /></Link>
+                  <Link href={"/siswa/materi/" + material.id} aria-label={`Lihat halaman materi: ${material.title}`}><ChevronRight size={17} aria-hidden="true" /></Link>
                 </li>
               );
             })}
@@ -116,27 +116,28 @@ export function StudentDashboard() {
 
       <section aria-labelledby="student-scenarios">
         <div className="dashboard-section-heading">
-          <div><h2 id="student-scenarios">Situasi nyata, ruang belajar yang aman</h2><p>Kenali jenis tantangan dalam rencana skenario pembelajaran.</p></div>
+          <div><h2 id="student-scenarios">Situasi nyata, ruang belajar yang aman</h2><p>Pilih latihan untuk mencoba keputusan dan melihat konsekuensinya.</p></div>
         </div>
         <div className="dashboard-scenario-grid">
-          {scenarioPreviews.map((scenario, index) => {
+          {scenarioPreviews.slice(0, 3).map((scenario, index) => {
             const Icon = scenarioIcons[scenario.icon];
             return (
               <article className="dashboard-scenario" key={scenario.id}>
                 <div className="dashboard-scenario-top"><div className="dashboard-scenario-icon"><Icon aria-hidden="true" /></div><span className="dashboard-scenario-number">0{index + 1}</span></div>
                 <h3>{scenario.title}</h3>
                 <p>{scenario.description}</p>
-                <div className="dashboard-scenario-meta"><Badge tone="neutral">Pratinjau</Badge><span>{scenario.category}</span></div>
+                <div className="dashboard-scenario-meta"><span>{scenario.category}</span><Link className="dashboard-text-link" href={"/siswa/skenario/" + scenario.id}>Buka latihan <ArrowRight aria-hidden="true" /></Link></div>
               </article>
             );
           })}
         </div>
         <div className="dashboard-scenario-footer">
-          <p className="dashboard-demo-note"><Info size={14} aria-hidden="true" />{scenarioPreviews.length} pratinjau dari {PLANNED_SCENARIO_COUNT} skenario yang direncanakan. Satu latihan lokal tersedia di halaman skenario. Progres dashboard tetap ilustrasi.</p>
+          <p className="dashboard-demo-note"><Info size={14} aria-hidden="true" />Tersedia {PLANNED_SCENARIO_COUNT} skenario. Progres pada dashboard adalah data ilustrasi.</p>
           <Link className="dashboard-text-link" href="/siswa/skenario">Lihat halaman skenario <ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
     </div>
   );
 }
+
 

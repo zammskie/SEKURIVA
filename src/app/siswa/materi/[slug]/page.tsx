@@ -12,7 +12,8 @@ type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
 export function generateStaticParams() { return materials.map(material => ({ slug: material.id })); }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: materials.find(material => material.id === (await params).slug)?.title ?? "Materi tidak ditemukan" };
+  const { slug } = await params;
+  return { title: materials.find(material => material.id === slug)?.title ?? "Materi tidak ditemukan" };
 }
 export default async function Page({ params }: Props) {
   const { slug } = await params;

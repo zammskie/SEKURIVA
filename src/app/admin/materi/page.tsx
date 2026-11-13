@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminMaterialList } from "@/components/materials/admin-material-list";
+
 export const metadata: Metadata = { title: "Manajemen Materi" };
-export default function Page() { return <PlaceholderPage role="admin" title="Manajemen Materi" description="Kelola susunan materi pembelajaran keamanan digital." future="Pengelolaan dan penyuntingan materi akan dikembangkan pada tahap berikutnya." />; }
+export default async function Page({ searchParams }: { searchParams: Promise<{ notice?: string }> }) {
+  const { notice } = await searchParams;
+  return <AdminMaterialList initialNotice={notice} />;
+}

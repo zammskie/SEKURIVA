@@ -4,6 +4,7 @@ import "@/styles/public.css";
 import "@/styles/dashboards.css";
 import "@/styles/simulation.css";
 import "@/styles/content.css";
+import "@/styles/materials.css";
 
 export const metadata: Metadata = {
   title: { default: "Security Awareness Simulator", template: "%s | Security Awareness Simulator" },

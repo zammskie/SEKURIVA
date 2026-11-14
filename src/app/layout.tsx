@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import "@/styles/public.css";
 import "@/styles/dashboards.css";
 import "@/styles/simulation.css";
+import "@/styles/scenario-foundation.css";
 import "@/styles/content.css";
 import "@/styles/materials.css";
 

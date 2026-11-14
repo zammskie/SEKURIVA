@@ -32,6 +32,7 @@ export interface ScenarioChoice {
   readonly id: string;
   readonly label: string;
   readonly response: string;
+  readonly responseSpeaker?: ScenarioSpeaker;
   readonly consequence: Consequence;
   readonly nextNodeId: string;
 }
@@ -60,13 +61,34 @@ export interface EndingNode {
 }
 
 export type ScenarioNode = MessageNode | DecisionNode | EndingNode;
-export interface ScenarioGraph { readonly startNodeId: string; readonly nodes: readonly ScenarioNode[]; }
+export interface ScenarioRedFlag { readonly id: string; readonly title: string; readonly description: string; readonly nodeId: string; }
+export interface ScenarioTactic { readonly title: string; readonly description: string; readonly nodeId: string; }
+export interface ScenarioChoiceAnalysis { readonly why: string; readonly possibleImpact: string; readonly saferAction: string; readonly lesson: string; }
+export interface ScenarioReference { readonly title: string; readonly url: string; readonly scope: string; }
+export interface ScenarioLearning {
+  readonly summary: string;
+  readonly redFlags: readonly ScenarioRedFlag[];
+  readonly socialEngineeringTactics: readonly ScenarioTactic[];
+  readonly safeActions: readonly string[];
+  readonly choiceAnalyses: Readonly<Record<string, ScenarioChoiceAnalysis>>;
+  readonly endingAnalyses: Readonly<Record<string, string>>;
+  readonly conclusion: string;
+  readonly references: readonly ScenarioReference[];
+}
+export interface ScenarioGraph {
+  readonly startNodeId: string;
+  readonly nodes: readonly ScenarioNode[];
+  readonly totalDecisionPoints?: number;
+  readonly learning?: ScenarioLearning;
+}
 export interface Scenario extends ScenarioMetadata, ScenarioGraph {}
 
 export interface ScenarioChoiceHistory {
   readonly nodeId: string;
   readonly choiceId: string;
   readonly label: string;
+  readonly decisionNodeId?: string;
+  readonly choiceLabel?: string;
   readonly response: string;
   readonly consequence: Consequence;
   readonly nextNodeId: string;
@@ -77,6 +99,8 @@ export interface ScenarioCompletionPayload {
   readonly startedAt: string;
   readonly completedAt: string;
   readonly endingNodeId: string;
+  readonly endingId?: string;
+  readonly observedRedFlagIds?: readonly string[];
   readonly visitedNodeIds: readonly string[];
   readonly selectedChoices: readonly ScenarioChoiceHistory[];
 }

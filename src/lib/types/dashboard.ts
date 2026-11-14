@@ -2,7 +2,7 @@ export interface ScenarioSummary {
   readonly id: string;
   readonly title: string;
   readonly category: string;
-  readonly status: "Direncanakan";
+  readonly status: "Direncanakan" | "Tersedia";
 }
 
 export interface SimulationActivity {

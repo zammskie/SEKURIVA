@@ -30,7 +30,7 @@ export function selectScenarioChoice(scenario: Scenario, state: ScenarioRunState
   if (state.pendingChoice) throw new Error("Pilihan sudah dibuat; baca konsekuensi sebelum melanjutkan.");
   const choice = (node as DecisionNode).choices.find(item => item.id === choiceId);
   if (!choice) throw new Error(`Pilihan ${choiceId} tidak valid.`);
-  const record = { nodeId: node.id, choiceId: choice.id, label: choice.label, response: choice.response, consequence: choice.consequence, nextNodeId: choice.nextNodeId };
+  const record = { nodeId: node.id, decisionNodeId: node.id, choiceId: choice.id, label: choice.label, choiceLabel: choice.label, response: choice.response, consequence: choice.consequence, nextNodeId: choice.nextNodeId };
   return { ...state, selectedChoices: [...state.selectedChoices, record], pendingChoice: record };
 }
 
@@ -47,6 +47,6 @@ export function advanceScenario(scenario: Scenario, state: ScenarioRunState): Sc
 export function completeScenario(scenario: Scenario, state: ScenarioRunState, completedAt = new Date().toISOString()): ScenarioRunState {
   const node = activeNode(scenario, state);
   if (node.type !== "ending") throw new Error("Sesi belum mencapai ending.");
-  const completionPayload = { scenarioId: scenario.id, startedAt: state.startedAt, completedAt, endingNodeId: node.id, visitedNodeIds: state.visitedNodeIds, selectedChoices: state.selectedChoices };
+  const completionPayload = { scenarioId: scenario.id, startedAt: state.startedAt, completedAt, endingNodeId: node.id, endingId: node.id, visitedNodeIds: state.visitedNodeIds, selectedChoices: state.selectedChoices, observedRedFlagIds: scenario.learning?.redFlags.filter(flag => state.visitedNodeIds.includes(flag.nodeId)).map(flag => flag.id) ?? [] };
   return { ...state, completedAt, completionStatus: "completed", completionPayload };
 }

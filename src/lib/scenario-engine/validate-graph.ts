@@ -29,6 +29,7 @@ export function validateScenarioGraph(scenario: Scenario): GraphValidationResult
   if (!nodes.has(scenario.startNodeId)) errors.push(`Node awal ${scenario.startNodeId} tidak ditemukan.`);
   const decisions = scenario.nodes.filter(node => node.type === "decision");
   if (decisions.length < 2) errors.push("Skenario harus memiliki minimal dua decision point.");
+  if (scenario.totalDecisionPoints !== undefined && scenario.totalDecisionPoints !== decisions.length) errors.push(`totalDecisionPoints tidak sesuai jumlah node keputusan (${decisions.length}).`);
 
   for (const node of scenario.nodes) {
     if (!filled(node.id)) errors.push("Ada node tanpa ID.");
@@ -76,5 +77,19 @@ export function validateScenarioGraph(scenario: Scenario): GraphValidationResult
   }
   if (nodes.has(scenario.startNodeId)) walk(scenario.startNodeId, 0);
   nodes.forEach((_node, id) => { if (!reached.has(id)) errors.push(`Node ${id} tidak dapat dijangkau dari startNodeId.`); });
+  if (scenario.learning) {
+    const choiceIds = new Set(decisions.flatMap(node => {
+      const choices: readonly ScenarioChoice[] = Array.isArray(node.choices) ? node.choices : [];
+      return choices.map(choice => choice.id);
+    }));
+    const endingIds = new Set(scenario.nodes.filter(node => node.type === "ending").map(node => node.id));
+    if (scenario.learning.redFlags.length < 4) errors.push("Data pembelajaran perlu minimal empat red flag.");
+    scenario.learning.redFlags.forEach(flag => { if (!nodes.has(flag.nodeId)) errors.push(`Red flag ${flag.id} merujuk node yang tidak tersedia.`); });
+    scenario.learning.socialEngineeringTactics.forEach(tactic => { if (!nodes.has(tactic.nodeId)) errors.push(`Taktik ${tactic.title} merujuk node yang tidak tersedia.`); });
+    if (scenario.learning.safeActions.length < 3) errors.push("Data pembelajaran perlu minimal tiga tindakan aman.");
+    choiceIds.forEach(id => { if (!scenario.learning?.choiceAnalyses[id]) errors.push(`Analisis pilihan ${id} tidak tersedia.`); });
+    endingIds.forEach(id => { if (!scenario.learning?.endingAnalyses[id]) errors.push(`Analisis ending ${id} tidak tersedia.`); });
+    if (scenario.learning.references.length === 0) errors.push("Referensi edukatif belum tersedia.");
+  }
   return { valid: errors.length === 0, errors: [...new Set(errors)], warnings };
 }

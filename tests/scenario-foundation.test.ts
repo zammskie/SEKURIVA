@@ -7,7 +7,7 @@ import type { Scenario } from "../src/lib/scenario-engine/foundation-types";
 import { validateScenarioCatalog, validateScenarioGraph } from "../src/lib/scenario-engine/validate-graph";
 import { fixtureScenario } from "./fixtures/scenario-foundation";
 
-test("official catalog has exactly eight unique, unavailable scenarios", async () => {
+test("official catalog has exactly eight unique, playable scenarios", async () => {
   assert.equal(validateScenarioCatalog(scenarioCatalog).valid, true);
   assert.deepEqual(scenarioCatalog.map(item => item.title), [
     "Lowongan Kerja Paruh Waktu Palsu",
@@ -19,12 +19,12 @@ test("official catalog has exactly eight unique, unavailable scenarios", async (
     "Investasi Palsu dan Impersonasi",
     "Penipuan Pemulihan Dana (Recovery Scam)",
   ]);
-  assert.ok(scenarioCatalog.every(item => item.status === "in_development"));
+  assert.ok(scenarioCatalog.every(item => item.status === "ready"));
   assert.deepEqual(await mockScenarioRepository.getScenarioMetadata(), {
-    total: 8, available: 0, inDevelopment: 8,
+    total: 8, available: 8, inDevelopment: 0,
     categories: scenarioCatalog.map(item => item.category),
   });
-  assert.equal((await mockScenarioRepository.getAvailableScenarios()).length, 0);
+  assert.equal((await mockScenarioRepository.getAvailableScenarios()).length, 8);
   assert.throws(() => startScenario({ ...fixtureScenario, status: "in_development" }), /belum siap/);
 });
 

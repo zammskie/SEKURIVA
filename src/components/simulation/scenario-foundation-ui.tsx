@@ -22,8 +22,8 @@ export function DecisionPanel({ node, onSelect, disabled = false }: { node: Deci
 }
 
 const riskLabels: Record<Consequence["riskLevel"], string> = { low: "Risiko rendah", medium: "Risiko sedang", high: "Risiko tinggi" };
-export function ConsequenceFeedback({ selection, onContinue }: { selection: ScenarioChoiceHistory; onContinue: () => void }) {
-  return <section className="foundation-feedback" aria-live="polite"><p><strong>Respons:</strong> {selection.response}</p><Badge tone={selection.consequence.riskLevel === "high" ? "danger" : selection.consequence.riskLevel === "medium" ? "warning" : "success"}>{riskLabels[selection.consequence.riskLevel]}</Badge><h2>{selection.consequence.title}</h2><p>{selection.consequence.description}</p><p className="simulation-caption">Dampak ini hanya terjadi dalam simulasi.</p><button type="button" className="button button-primary" onClick={onContinue}>Lanjutkan</button></section>;
+export function ConsequenceFeedback({ selection, onContinue, showResponse = true }: { selection: ScenarioChoiceHistory; onContinue: () => void; showResponse?: boolean }) {
+  return <section className="foundation-feedback" aria-live="polite">{showResponse && <p><strong>Respons:</strong> {selection.response}</p>}<Badge tone={selection.consequence.riskLevel === "high" ? "danger" : selection.consequence.riskLevel === "medium" ? "warning" : "success"}>{riskLabels[selection.consequence.riskLevel]}</Badge><h2>{selection.consequence.title}</h2><p>{selection.consequence.description}</p><p className="simulation-caption">Dampak ini hanya terjadi dalam simulasi.</p><button type="button" className="button button-primary" onClick={onContinue}>Lanjutkan</button></section>;
 }
 
 export function ScenarioProgressIndicator({ decisionsMade, totalDecisionPoints }: { decisionsMade: number; totalDecisionPoints: number }) {

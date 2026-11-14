@@ -1,8 +1,9 @@
 import type { AdminDashboardData, ScenarioSummary, StudentDashboardData } from "@/lib/types/dashboard";
 import { scenarioCatalog } from "@/data/scenarios/catalog";
+import { readyScenario } from "@/lib/scenario-engine/mock-scenario-repository";
 
 /** Dashboard membaca sumber metadata yang sama dengan katalog skenario siswa. */
-export const plannedScenarios: readonly ScenarioSummary[] = scenarioCatalog.map(item => ({ id: item.id, title: item.title, category: item.category, status: "Direncanakan" }));
+export const plannedScenarios: readonly ScenarioSummary[] = scenarioCatalog.map(item => ({ id: item.id, title: item.title, category: item.category, status: readyScenario(item) ? "Tersedia" : "Direncanakan" }));
 
 const demoProfiles = ["Siswa Demo A", "Siswa Demo B", "Siswa Demo C"] as const;
 const progress = { studentCount: demoProfiles.length, studentsStarted: 0, materialsCompleted: 0, simulationsCompleted: 0 } as const;

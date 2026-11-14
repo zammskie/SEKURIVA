@@ -53,11 +53,18 @@ function validRunState(scenario: Scenario, value: unknown): value is ScenarioRun
   } catch { return false; }
 }
 
+function scenarioForRecord(value: Record<string, unknown>): Scenario | undefined {
+  if (value.scenarioSnapshot && typeof value.scenarioSnapshot === "object") {
+    return value.scenarioSnapshot as Scenario;
+  }
+  return scenarioFor(value.scenarioId as string);
+}
+
 function validRecord(value: unknown, userId: string): value is SimulationRecord {
   if (!record(value) || typeof value.id !== "string" || !value.id || value.userId !== userId
     || typeof value.scenarioId !== "string" || typeof value.scenarioTitleSnapshot !== "string"
     || !iso(value.startedAt) || !iso(value.updatedAt)) return false;
-  const scenario = scenarioFor(value.scenarioId);
+  const scenario = scenarioForRecord(value);
   if (!scenario || !validRunState(scenario, value.runState)) return false;
   const state = value.runState as ScenarioRunState;
   if (value.startedAt !== state.startedAt) return false;
@@ -69,7 +76,9 @@ function validRecord(value: unknown, userId: string): value is SimulationRecord 
 
 export interface SimulationRepository {
   list(userId: string): SimulationHistorySnapshot;
+  listAll(): readonly SimulationRecord[];
   get(userId: string, runId: string): SimulationRecord | undefined;
+  getAny(runId: string): SimulationRecord | undefined;
   latestForScenario(userId: string, scenarioId: string): SimulationRecord | undefined;
   create(userId: string, scenario: Scenario, state: ScenarioRunState): SimulationRecord;
   saveState(userId: string, runId: string, state: ScenarioRunState): SimulationRecord;
@@ -96,12 +105,28 @@ export function createSimulationRepository(storage: StoragePort, onChange: () =>
   };
   return {
     list: read,
+    listAll() {
+      const studentIds = ["siswa-demo", "siswa-demo-2", "siswa-demo-3"];
+      const all: SimulationRecord[] = [];
+      for (const uid of studentIds) {
+        all.push(...read(uid).records);
+      }
+      return all.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    },
     get(userId, runId) { return read(userId).records.find(item => item.id === runId); },
+    getAny(runId) {
+      const studentIds = ["siswa-demo", "siswa-demo-2", "siswa-demo-3"];
+      for (const uid of studentIds) {
+        const found = read(uid).records.find(item => item.id === runId);
+        if (found) return found;
+      }
+      return undefined;
+    },
     latestForScenario(userId, scenarioId) { return read(userId).records.find(item => item.scenarioId === scenarioId); },
     create(userId, scenario, state) {
       if (!userId || !scenarioFor(scenario.id) || !validRunState(scenario, state) || state.completionStatus !== "in_progress" || state.visitedNodeIds.length !== 1) throw new Error("Sesi baru tidak valid.");
       const now = state.startedAt;
-      const item: SimulationRecord = { id: crypto.randomUUID(), userId, scenarioId: scenario.id, scenarioTitleSnapshot: scenario.title, startedAt: now, updatedAt: now, completedAt: null, debriefingViewedAt: null, status: "in_progress", runState: state };
+      const item: SimulationRecord = { id: crypto.randomUUID(), userId, scenarioId: scenario.id, scenarioTitleSnapshot: scenario.title, startedAt: now, updatedAt: now, completedAt: null, debriefingViewedAt: null, status: "in_progress", runState: state, scenarioSnapshot: scenario };
       write(userId, [item, ...read(userId).records]);
       return item;
     },
@@ -109,7 +134,7 @@ export function createSimulationRepository(storage: StoragePort, onChange: () =>
       const all = read(userId).records;
       const current = all.find(item => item.id === runId);
       if (!current || current.status !== "in_progress") throw new Error("Sesi aktif tidak ditemukan.");
-      const scenario = scenarioFor(current.scenarioId);
+      const scenario = current.scenarioSnapshot ?? scenarioFor(current.scenarioId);
       if (!scenario || !validRunState(scenario, state) || state.startedAt !== current.startedAt) throw new Error("Data sesi tidak valid.");
       if (!equal(state.visitedNodeIds.slice(0, current.runState.visitedNodeIds.length), current.runState.visitedNodeIds)
         || !equal(state.selectedChoices.slice(0, current.runState.selectedChoices.length), current.runState.selectedChoices)) throw new Error("Langkah sesi tidak dapat dimundurkan.");

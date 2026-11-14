@@ -8,6 +8,7 @@ import { advanceScenario, completeScenario, getScenarioNode, selectScenarioChoic
 import { DEMO_STUDENT_ID, localSimulationRepository } from "@/lib/simulation-history/repository";
 import type { SimulationRecord } from "@/lib/simulation-history/types";
 import { ConsequenceFeedback, DecisionPanel, ScenarioConversation, ScenarioEnding, ScenarioProgressIndicator } from "./scenario-foundation-ui";
+import { useCurrentUser } from "@/lib/auth/demo-session";
 
 type TranscriptMessage = { id: string; speaker: ScenarioSpeaker; content: string };
 
@@ -28,18 +29,20 @@ function transcriptFor(scenario: Scenario, run: ScenarioRunState): TranscriptMes
 }
 
 export function ScenarioRunner({ scenario, number }: { scenario: Scenario; number: number }) {
+  const { user } = useCurrentUser("siswa");
+  const studentId = user.role === "siswa" ? user.id : DEMO_STUDENT_ID;
   const [stored, setStored] = useState<SimulationRecord | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    const snapshot = localSimulationRepository.list(DEMO_STUDENT_ID);
+    const snapshot = localSimulationRepository.list(studentId);
     const latest = snapshot.records.find(item => item.scenarioId === scenario.id);
     queueMicrotask(() => {
       if (latest && latest.status !== "completed") setStored(latest);
       if (snapshot.warning) setError(snapshot.warning);
       setLoaded(true);
     });
-  }, [scenario.id]);
+  }, [scenario.id, studentId]);
 
   const run = stored?.runState ?? null;
   const node = run ? getScenarioNode(scenario, run.currentNodeId) : null;
@@ -48,13 +51,13 @@ export function ScenarioRunner({ scenario, number }: { scenario: Scenario; numbe
   const startNew = () => {
     try {
       const next = startScenario(scenario);
-      setStored(localSimulationRepository.create(DEMO_STUDENT_ID, scenario, next));
+      setStored(localSimulationRepository.create(studentId, scenario, next));
       setError(null);
     } catch { setError("Sesi tidak dapat disimpan di browser ini. Periksa izin penyimpanan, lalu coba lagi."); }
   };
   const persist = (next: ScenarioRunState) => {
     if (!stored) return;
-    try { setStored(localSimulationRepository.saveState(DEMO_STUDENT_ID, stored.id, next)); setError(null); }
+    try { setStored(localSimulationRepository.saveState(studentId, stored.id, next)); setError(null); }
     catch { setError("Langkah ini belum tersimpan. Coba lagi sebelum meninggalkan halaman."); }
   };
   const move = () => {

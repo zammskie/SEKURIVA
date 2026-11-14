@@ -18,7 +18,7 @@ function isMaterial(value: unknown): value is Material {
   return typeof value.id === "string" && typeof value.title === "string" && typeof value.slug === "string"
     && MATERIAL_CATEGORIES.includes(value.category as Material["category"])
     && typeof value.summary === "string" && typeof value.estimatedDuration === "number"
-    && (value.status === "Draft" || value.status === "Published")
+    && (value.status === "Draft" || value.status === "Published" || value.status === "Archived")
     && (value.difficulty === "Dasar" || value.difficulty === "Menengah")
     && ["shield", "users", "link", "wallet", "lock"].includes(value.coverIcon as string)
     && typeof value.createdAt === "string" && typeof value.updatedAt === "string"

@@ -5,9 +5,11 @@ import { scenarioCatalog } from "@/data/scenarios/catalog";
 import { calculateSimulationProgress } from "@/lib/simulation-history/progress";
 import { formatSimulationDate, simulationStatus } from "@/lib/simulation-history/display";
 import { useSimulationHistory } from "@/lib/simulation-history/use-simulation-history";
+import { useCurrentUser } from "@/lib/auth/demo-session";
 
 export function StudentProgress() {
-  const { snapshot } = useSimulationHistory();
+  const { user } = useCurrentUser("siswa");
+  const { snapshot } = useSimulationHistory(user.role === "siswa" ? user.id : undefined);
   if (!snapshot) return <p>Memuat progres…</p>;
   const progress = calculateSimulationProgress(snapshot.records);
   return <div className="history-stack"><header className="history-header"><p className="eyebrow">RUANG BELAJAR</p><h1>Progres Belajar</h1><p>Perkembangan penyelesaian delapan skenario simulasi. Persentase ini menunjukkan aktivitas, bukan skor kemampuan.</p></header>

@@ -11,14 +11,16 @@ import { useMaterials } from "@/lib/materials/use-materials";
 import { useSimulationHistory } from "@/lib/simulation-history/use-simulation-history";
 import { calculateSimulationProgress } from "@/lib/simulation-history/progress";
 import { formatSimulationDate, simulationStatus } from "@/lib/simulation-history/display";
+import { useCurrentUser } from "@/lib/auth/demo-session";
 
 export function StudentDashboard({ data }: { data: StudentDashboardData }) {
+  const { user } = useCurrentUser("siswa");
   const storedMaterials = useMaterials();
   const published = storedMaterials?.filter(material => material.status === "Published") ?? [];
-  const { snapshot } = useSimulationHistory();
+  const { snapshot } = useSimulationHistory(user.role === "siswa" ? user.id : undefined);
   const simulationProgress = calculateSimulationProgress(snapshot?.records ?? []);
   return <div className="student-dashboard dashboard-stack">
-    <PageHeader eyebrow="RUANG BELAJAR · DATA DEMO" title="Selamat Datang di Security Awareness Simulator" description="Pelajari cara mengenali penipuan digital melalui simulasi percakapan, pilihan respons, dan pembahasan setelah simulasi."><Badge tone="teal">{data.name}</Badge></PageHeader>
+    <PageHeader eyebrow="RUANG BELAJAR · DATA DEMO" title="Selamat Datang di Security Awareness Simulator" description="Pelajari cara mengenali penipuan digital melalui simulasi percakapan, pilihan respons, dan pembahasan setelah simulasi."><Badge tone="teal">{user.name}</Badge></PageHeader>
 
     <div className="dashboard-learning-grid">
       <section className="dashboard-learning-hero" aria-labelledby="learning-introduction"><div className="dashboard-learning-copy"><p className="dashboard-eyebrow"><BookOpen size={14} aria-hidden="true" /> MULAI DARI PEMAHAMAN</p><h2 id="learning-introduction">Kenali tanda penipuan digital sebelum mengambil keputusan.</h2><p>Mulailah dengan materi keamanan digital, lalu jelajahi skenario yang tersedia di katalog.</p><ButtonLink href="/siswa/materi">Jelajahi Materi <ArrowRight size={16} aria-hidden="true" /></ButtonLink></div><div className="dashboard-shield-art" aria-hidden="true"><ShieldCheck /></div></section>

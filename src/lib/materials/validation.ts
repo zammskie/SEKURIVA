@@ -16,6 +16,6 @@ export function validateMaterial(input: MaterialInput, materials: readonly Mater
     if (!section.paragraphs.some(item => item.trim())) errors[`sections.${index}.paragraphs`] = "Isi utama bagian wajib diisi.";
   });
   if (!slugify(title)) errors.title = "Judul tidak dapat membentuk slug.";
-  if (input.status !== "Draft" && input.status !== "Published") errors.status = "Status materi tidak valid.";
+  if (input.status !== "Draft" && input.status !== "Published" && input.status !== "Archived") errors.status = "Status materi tidak valid.";
   return errors;
 }

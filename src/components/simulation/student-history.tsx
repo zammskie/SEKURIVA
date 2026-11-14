@@ -6,9 +6,12 @@ import { readyScenario } from "@/lib/scenario-engine/mock-scenario-repository";
 import { decisionReviews } from "@/lib/simulation-history/review";
 import { formatSimulationDate, simulationDuration, simulationStatus } from "@/lib/simulation-history/display";
 import { useSimulationHistory } from "@/lib/simulation-history/use-simulation-history";
+import { useCurrentUser } from "@/lib/auth/demo-session";
+import { localSimulationRepository } from "@/lib/simulation-history/repository";
 
 export function StudentHistory() {
-  const { snapshot } = useSimulationHistory();
+  const { user } = useCurrentUser("siswa");
+  const { snapshot } = useSimulationHistory(user.role === "siswa" ? user.id : undefined);
   if (!snapshot) return <p>Memuat riwayat…</p>;
   return <div className="history-stack"><header className="history-header"><p className="eyebrow">RUANG BELAJAR</p><h1>Riwayat Simulasi</h1><p>Setiap pengulangan tercatat sebagai sesi tersendiri. Buka satu sesi untuk melihat keputusan yang benar-benar kamu ambil.</p></header>
     {snapshot.warning && <p className="scenario-storage-warning" role="alert">{snapshot.warning}</p>}
@@ -17,12 +20,10 @@ export function StudentHistory() {
 }
 
 export function StudentHistoryDetail({ runId }: { runId: string }) {
-  const { snapshot } = useSimulationHistory();
-  if (!snapshot) return <p>Memuat sesi…</p>;
-  const run = snapshot.records.find(item => item.id === runId);
-  if (!run) return <section className="simulation-panel history-empty"><h1>Sesi tidak ditemukan</h1><p>Run ID ini tidak tersedia pada riwayat lokal pengguna demo.</p>{snapshot.warning && <p role="alert">{snapshot.warning}</p>}<Link className="button button-primary" href="/siswa/riwayat">Kembali ke riwayat</Link></section>;
+  const run = localSimulationRepository.getAny(runId);
+  if (!run) return <section className="simulation-panel history-empty"><h1>Sesi tidak ditemukan</h1><p>Run ID ini tidak tersedia pada riwayat lokal pengguna demo.</p><Link className="button button-primary" href="/siswa/riwayat">Kembali ke riwayat</Link></section>;
   const metadata = scenarioCatalog.find(item => item.id === run.scenarioId);
-  const scenario = metadata && readyScenario(metadata);
+  const scenario = run.scenarioSnapshot ?? (metadata ? readyScenario(metadata) : null);
   if (!scenario) return <p>Skenario tidak tersedia.</p>;
   const payload = run.runState.completionPayload;
   const ending = payload && scenario.nodes.find(node => node.id === payload.endingNodeId);

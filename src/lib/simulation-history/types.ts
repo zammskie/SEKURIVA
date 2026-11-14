@@ -1,4 +1,4 @@
-import type { ScenarioChoiceHistory, ScenarioRunState } from "@/lib/scenario-engine/foundation-types";
+import type { Scenario, ScenarioChoiceHistory, ScenarioRunState } from "@/lib/scenario-engine/foundation-types";
 
 export type SimulationRecordStatus = "in_progress" | "awaiting_debriefing" | "completed";
 export interface SimulationRecord {
@@ -12,6 +12,7 @@ export interface SimulationRecord {
   readonly debriefingViewedAt: string | null;
   readonly status: SimulationRecordStatus;
   readonly runState: ScenarioRunState;
+  readonly scenarioSnapshot?: Scenario;
 }
 export interface SimulationHistorySnapshot { readonly records: readonly SimulationRecord[]; readonly warning: string | null; }
 export interface ScenarioProgressItem {

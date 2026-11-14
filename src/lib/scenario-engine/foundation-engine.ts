@@ -8,7 +8,7 @@ export function getScenarioNode(scenario: Scenario, nodeId: string): ScenarioNod
 }
 
 export function startScenario(scenario: Scenario, startedAt = new Date().toISOString()): ScenarioRunState {
-  if (scenario.status !== "ready") throw new Error("Skenario belum siap dijalankan.");
+  if (scenario.status !== "ready" && (scenario.status as string) !== "published") throw new Error("Skenario belum siap dijalankan.");
   const result = validateScenarioGraph(scenario);
   if (!result.valid) throw new Error(result.errors.join(" "));
   return { scenarioId: scenario.id, startedAt, currentNodeId: scenario.startNodeId, visitedNodeIds: [scenario.startNodeId], selectedChoices: [], pendingChoice: null, completedAt: null, completionStatus: "in_progress", completionPayload: null };

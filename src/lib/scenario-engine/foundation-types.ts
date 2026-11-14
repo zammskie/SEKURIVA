@@ -1,6 +1,6 @@
 import type { MaterialCategory } from "@/lib/materials/types";
 
-export type ScenarioStatus = "draft" | "in_development" | "ready";
+export type ScenarioStatus = "draft" | "in_development" | "ready" | "published" | "archived";
 export type ScenarioCategory = "Penawaran pekerjaan" | "Tugas online" | "Penyamaran kurir" | "File aplikasi" | "Transaksi digital" | "Customer service" | "Investasi" | "Pemulihan dana";
 export type ScenarioSpeaker = "Pelaku" | "Siswa" | "Narator" | "Sistem";
 export type RiskLevel = "low" | "medium" | "high";

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { scenarioCatalog } from "@/data/scenarios/catalog";
 import { readyScenario } from "@/lib/scenario-engine/mock-scenario-repository";
-import { DEMO_STUDENT_ID, localSimulationRepository } from "@/lib/simulation-history/repository";
+import { localSimulationRepository } from "@/lib/simulation-history/repository";
 import { decisionReviews, journeyFlags, journeyTactics } from "@/lib/simulation-history/review";
 import { formatSimulationDate } from "@/lib/simulation-history/display";
 import type { SimulationRecord } from "@/lib/simulation-history/types";
@@ -14,21 +14,21 @@ export function DebriefingView({ runId }: { runId: string }) {
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     queueMicrotask(() => {
-      try { setRun(localSimulationRepository.get(DEMO_STUDENT_ID, runId) ?? null); }
+      try { setRun(localSimulationRepository.getAny(runId) ?? null); }
       catch { setError("Riwayat lokal tidak dapat dibaca."); setRun(null); }
     });
   }, [runId]);
   useEffect(() => {
     if (run?.status !== "awaiting_debriefing") return;
     queueMicrotask(() => {
-      try { setRun(localSimulationRepository.markDebriefViewed(DEMO_STUDENT_ID, runId)); }
+      try { setRun(localSimulationRepository.markDebriefViewed(run.userId, runId)); }
       catch { setError("Pembahasan tampil, tetapi progres belum dapat disimpan. Periksa penyimpanan browser lalu buka halaman ini lagi."); }
     });
   }, [run, runId]);
   if (run === undefined) return <p>Memuat pembahasan…</p>;
   if (!run) return <section className="simulation-panel history-empty"><h1>Pembahasan tidak ditemukan</h1><p>Run ID ini tidak tersedia pada riwayat lokal pengguna demo.</p>{error && <p role="alert">{error}</p>}<Link className="button button-primary" href="/siswa/riwayat">Lihat riwayat</Link></section>;
   const metadata = scenarioCatalog.find(item => item.id === run.scenarioId);
-  const scenario = metadata && readyScenario(metadata);
+  const scenario = run.scenarioSnapshot ?? (metadata ? readyScenario(metadata) : null);
   if (!scenario) return <p>Data skenario tidak tersedia.</p>;
   if (run.status === "in_progress") return <section className="simulation-panel history-empty"><h1>Simulasi masih berlangsung</h1><p>Selesaikan simulasi untuk membuka pembahasan.</p><Link className="button button-primary" href={`/siswa/skenario/${scenario.slug}/main`}>Lanjutkan simulasi</Link></section>;
   const payload = run.runState.completionPayload;

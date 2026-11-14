@@ -6,7 +6,7 @@ export const MATERIAL_CATEGORIES = [
   "Perlindungan Data Pribadi dan Keamanan Perangkat",
 ] as const;
 export type MaterialCategory = (typeof MATERIAL_CATEGORIES)[number];
-export type MaterialStatus = "Draft" | "Published";
+export type MaterialStatus = "Draft" | "Published" | "Archived";
 export type MaterialDifficulty = "Dasar" | "Menengah";
 export type MaterialIcon = "shield" | "users" | "link" | "wallet" | "lock";
 

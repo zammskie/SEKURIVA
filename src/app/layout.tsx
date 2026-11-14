@@ -6,6 +6,7 @@ import "@/styles/simulation.css";
 import "@/styles/scenario-foundation.css";
 import "@/styles/content.css";
 import "@/styles/materials.css";
+import "@/styles/simulation-history.css";
 
 export const metadata: Metadata = {
   title: { default: "Security Awareness Simulator", template: "%s | Security Awareness Simulator" },

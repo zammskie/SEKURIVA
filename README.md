@@ -1,6 +1,6 @@
-# Security Awareness Simulator — Tahap 3
+# Security Awareness Simulator — Tahap 7
 
-Media pembelajaran keamanan digital untuk kelas X BC 1 SMK Negeri 1 Semarang. Ruang siswa menyediakan empat materi dan delapan simulasi interaktif dengan cerita fiktif.
+Media pembelajaran keamanan digital responsif untuk siswa kelas X BC 1 SMK Negeri 1 Semarang. Proyek ini masih berupa frontend preview dengan data lokal.
 
 ## Menjalankan proyek
 
@@ -11,48 +11,17 @@ npm ci
 npm run dev
 ```
 
-- Materi di http://localhost:3000/siswa/materi
-- Simulasi di http://localhost:3000/siswa/skenario
-- Pemilihan peran di http://localhost:3000/preview
+Buka `http://localhost:3000/preview`, lalu pilih ruang siswa. Katalog simulasi ada di `/siswa/skenario`; progres dan riwayat ada di `/siswa/progres` dan `/siswa/riwayat`.
 
-Untuk menjalankan versi produksi lokal, gunakan `npm run build` lalu `npm start`.
+Untuk build produksi lokal, hentikan server development yang menggunakan folder `.next`, lalu jalankan `npm run build` dan `npm start`. Pada folder OneDrive, berkas build dapat terkunci saat kedua proses berjalan bersamaan.
 
-## Materi pembelajaran
+## Alur simulasi
 
-| Modul | Topik | Isi |
-| --- | --- | --- |
-| Dasar Keamanan Digital | 3 | Aset digital, verifikasi, dan langkah awal setelah insiden |
-| Mengenali Phishing | 4 | Penyamaran, tekanan, tautan/lampiran/QR, dan pelaporan |
-| Kata Sandi & Keamanan Akun | 3 | Kredensial unik, MFA, OTP, dan pemulihan akun |
-| Privasi & Data Pribadi | 3 | Paparan data, pembatasan informasi, dan berbagi bukti secara privat |
+Delapan skenario resmi memiliki empat jalur masing-masing, dua keputusan pada setiap jalur, dan empat ending. Runner menyimpan langkah sesi di `localStorage` sehingga halaman dapat dimuat ulang. Setelah ending, tombol **Tampilkan Pembahasan** membuka pembahasan sesuai Run ID sesi tersebut.
 
-Setiap modul memiliki tujuan, penjelasan, contoh kontekstual, rangkuman, refleksi, satu cek pemahaman dengan umpan balik, serta referensi dan tautan simulasi terkait. Referensi utama berasal dari CISA dan FTC serta dicantumkan pada modul yang relevan.
+Pembahasan menampilkan keputusan dan konsekuensi aktual, jalur percakapan, tanda bahaya yang muncul, tanda bahaya dari jalur lain secara terpisah, teknik manipulasi, langkah aman, dan rujukan resmi. Skenario dihitung selesai setelah pembahasan dibuka. Persentase progres hanya menunjukkan jumlah skenario unik yang selesai dari delapan, bukan skor kemampuan.
 
-## Skenario
-
-1. Pesan dari Kurir Paket
-2. Email Verifikasi Akun
-3. Promo yang Terlalu Menarik
-4. Teman Meminta Bantuan
-5. Hadiah yang Tidak Pernah Diikuti
-6. Tawaran Magang Instan
-7. Kode QR di Poster Acara
-8. Petugas Meminta Kode OTP
-
-Setiap skenario menggabungkan percakapan dan adegan, memiliki empat jalur dengan dua keputusan pada setiap jalur, serta menampilkan respons dan konsekuensi tiap pilihan. Keempat ending menuju debriefing dengan tanda bahaya, tindakan aman, pertanyaan refleksi, dan tautan bacaan. Pemain dapat melihat jejak keputusan dan mengulang sesi.
-
-Latihan dan cek pemahaman berjalan di memori halaman. Meninggalkan atau memuat ulang halaman mengakhiri sesi. Angka progres, riwayat global, dan profil di dashboard merupakan data demo. Integrasi autentikasi, database, pengelolaan konten, dan penyimpanan progres masuk Tahap 4.
-
-## Struktur
-
-- `src/app` — halaman publik, dashboard, katalog, dan halaman detail.
-- `src/components` — shell responsif, komponen UI, pemain simulasi, dan cek pemahaman.
-- `src/data/materials` — ringkasan katalog serta konten modul.
-- `src/data/scenarios` — skenario acuan, tujuh skenario tambahan, dan katalog.
-- `src/lib/scenario-engine` — validasi graf dan transisi sesi.
-- `src/lib/types` — tipe TypeScript untuk konten dan progres.
-- `src/styles` — token desain dan gaya responsif.
-- `tests` — pengujian engine, keterkaitan konten, dan penelusuran seluruh jalur.
+Setiap pengulangan membuat Run ID baru. Riwayat lama tetap tersedia pada browser dan pengguna demo yang sama. Data dikelola oleh repository di `src/lib/simulation-history`; payload memiliki versi skema dan divalidasi saat dibaca. Data rusak diabaikan dengan peringatan. Penyimpanan ini sementara pada perangkat/browser yang digunakan, bukan penyimpanan server atau pengamanan data produksi. Backend dan Supabase belum terhubung pada Tahap 7.
 
 ## Pemeriksaan
 
@@ -63,6 +32,4 @@ npm run typecheck
 npm run build
 ```
 
-Tes konten menelusuri seluruh 32 jalur dengan mesin simulasi serta memeriksa keterkaitan katalog, modul, dan debriefing. Mesin memvalidasi konten bertipe sebelum sesi berjalan. Lihat `src/lib/scenario-engine/README.md` untuk aturan graf.
-
-Hasil Tahap 3 pada 12 November 2026: 23 tes lulus, lint dan pemeriksaan TypeScript lulus, serta build produksi berhasil. Pemeriksaan HTTP lokal mengonfirmasi 25 halaman merespons 200, semua tautan katalog tersedia, dan slug tak dikenal merespons 404. Tampilan lintas ukuran dan interaksi melalui browser belum diverifikasi secara visual.
+Pengujian mencakup seluruh 32 jalur skenario, penyimpanan keputusan dan ending per Run ID, progres skenario unik, pemisahan pengguna demo, pengulangan, dan penanganan data lokal yang rusak.
